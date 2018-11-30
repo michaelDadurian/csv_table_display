@@ -67,43 +67,60 @@ function parse_data(csv){
     }
     
     console.log(data);
-    create_table(data);
+    generate_table(data);
     
 }
 
-function create_table(data){
-    /* Reset output table */
-    document.getElementById('output_table').innerHTML = "";
-    var table = document.createElement('table');
-    var header = table.insertRow(-1);
-    
-    /* Create header row containing the column names */
-    Object.keys(data[0]).forEach(function(key){
-        var col_name = document.createElement("TH");
-        col_name.innerHTML = key;
-        col_name.onclick = function(){
-            sort_by_col(key, data);
-        }
-        header.appendChild(col_name);
-    });
-    
-    for (var i = 0; i < data.length; i++){
-        var row = table.insertRow(-1);
+
+var generate_table = (function(){
+    var col_indices = {}
+    var index = 0;
+     
+    return function create_table(data){
+        
+        /* Reset output table */
+        document.getElementById('output_table').innerHTML = "";
+        
+        /* Create table element */
+        var table = document.createElement('table');
+        table.setAttribute('id','output_table');
+        
+        
+        
+        var header = table.insertRow(-1);
+        
+        /* Create header row containing the column names */
         Object.keys(data[0]).forEach(function(key){
-            var data_row = row.insertCell(-1);
-            data_row.appendChild(document.createTextNode(data[i][key]));
+            var col_name = document.createElement("TH");
+            col_indices[key] = index++;
+            col_name.innerHTML = key;
+            col_name.onclick = function(){
+                sort_by_col(key, col_indices[key], data);
+            }
+            
+            header.appendChild(col_name);
         });
+        
+        for (var i = 0; i < data.length; i++){
+            var row = table.insertRow(-1);
+            Object.keys(data[0]).forEach(function(key){
+                var data_row = row.insertCell(-1);
+                data_row.appendChild(document.createTextNode(data[i][key]));
+            });
+        }
+        
+        document.getElementById('output_table').appendChild(table);
     }
+})();
+
+function sort_by_col(col_name, col_index, data){
+    var table_div = document.getElementById('output_table');
     
-    document.getElementById('output_table').appendChild(table);
-}
-
-
-function sort_by_col(col_name, data){
-    var table = document.getElementById('output_table');
+    
     var rows = 0;
     var sorted = false;
     var data_type;
+    var direction = 'asc';
   
     var col_val = data[0][col_name];
    
@@ -124,15 +141,34 @@ function sort_by_col(col_name, data){
     }
     
     while(!sorted){
+    
         sorted = true;
-        
-        /*THIS IS THE LINE THAT'S FUCKED UP. ROWS IS UNDEFINED?????*/
-        rows = table.rows;
+        rows = table_div.childNodes[0].rows;
         console.log(rows);
+        var length = rows.length;
+        console.log(length);
+     
         
-        for (var i = 1; i < rows.length; i++){
-            curr_row = rows[i].getElementsByTagName('TD')[col_name];
+        for (var i = 1; i < rows.length - 1; i++){
+            curr_row = rows[i].getElementsByTagName('TD')[col_index];
+            next_row = rows[i+1].getElementsByTagName('TD')[col_index];
             console.log('curr row: ' + curr_row);
+            console.log(next_row);
+            
+            if(direction == 'asc'){
+                if(data_type === 'string'){
+                    if (curr_row.innerHTML.toUpperCase() > next_row.innerHTML.toUpperCase()){
+                        rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                        sorted = false;
+                    }
+                }
+                else if (data_type === 'number'){
+                    if (Number(curr_row.innerHTML) > Number(next_row.innerHTML)){
+                        rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                        sorted = false;
+                    }
+                }
+            }
         }
         
     }
