@@ -122,7 +122,6 @@ var generate_table = (function(){
 function sort_by_col(col_name, col_index, data, sort_toggle){
 
 
-
 	const compare_property_dsc = (value) => 
 		(a, b) => a[value] == b[value] ? 0 : a[value] < b[value] ? -1 : 1;
 
@@ -153,15 +152,16 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
 
  	}
 
- 	sort_toggle == 1 ? table_to_array.sort(compare_property_asc(col_index)) : table_to_array.sort(compare_property_dsc(col_index));
 
- 	/*
- 	if (sort_toggle == 1){
- 		table_to_array.sort(compare_property_asc(col_index));
- 	} else{
- 		table_to_array.sort(compare_property_dsc(col_index));
- 	}
-	*/
+	if (col_name === 'row_num'){
+
+		sort_toggle == 1 ? table_to_array.sort((a,b) => a[0] - b[0]) : table_to_array.sort((a,b) => b[0] - a[0])
+	}else{
+		//if col name is row num then just table_to_array
+	 	sort_toggle == 1 ? table_to_array.sort((a,b) => a[col_index] < b[col_index]) : table_to_array.sort((a,b) => b[col_index] > a[col_index])
+	 	
+
+	}
 
  	for(var i = 0; i < num_rows; i++){
  		for (var j = 0; j < num_cells; j++){
