@@ -154,12 +154,9 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
 
 
 	if (col_name === 'row_num'){
-
 		sort_toggle == 1 ? table_to_array.sort((a,b) => a[0] - b[0]) : table_to_array.sort((a,b) => b[0] - a[0])
 	}else{
-		//if col name is row num then just table_to_array
-	 	sort_toggle == 1 ? table_to_array.sort((a,b) => a[col_index] < b[col_index]) : table_to_array.sort((a,b) => b[col_index] > a[col_index])
-	 	
+	 	sort_toggle == 1 ? table_to_array.sort(compare_property_asc(col_index)) : table_to_array.sort(compare_property_dsc(col_index))
 
 	}
 
