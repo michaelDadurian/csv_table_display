@@ -92,7 +92,7 @@ var generate_table = (function(){
         Object.keys(data[0]).forEach(function(key){
             var col_name = document.createElement("TH");
             col_indices[key] = index++;
-            col_name.setAttribute('id', 'col' + index);
+            //col_name.setAttribute('id', 'col' + index);
             col_name.innerHTML = key;
             var sort_toggle = 1;
 
@@ -200,13 +200,14 @@ function filter_table(){
 
 function regex_filter(){
     var regex_input = RegExp(document.getElementById('regex_input').value, 'i');
-    console.log(regex_input);
+
+    
     var table = document.getElementById('output_table');
     var table_rows = table.getElementsByTagName('tr');
    
     for (var i = 0; i < table_rows.length; i++){
         
-        if (regex_input.test(table_rows[i].textContent.toUpperCase())){
+        if (regex_input.test(table_rows[i].textContent)){
             /* Do nothing */
             table_rows[i].style.display = "";
         }else{
@@ -216,6 +217,9 @@ function regex_filter(){
             
     }
 }
+
+
+function statistics
     
     
  
