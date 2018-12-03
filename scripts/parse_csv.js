@@ -171,3 +171,27 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
     
 }
 
+function filter_table(){
+    var input = document.getElementById('filter_input');
+    var table = document.getElementById('output_table');
+    var table_rows = table.getElementsByTagName('tr');
+    var filter = input.value.toUpperCase();
+    console.log(table_rows);
+    
+    for (var i = 0; i < table_rows.length; i++){
+        
+        if (table_rows[i].innerText.toUpperCase().indexOf(filter) > -1){
+            table_rows[i].style.display = "";
+        }else{
+            table_rows[i].style.display = "none";
+        }
+            
+    }
+        
+ 
+        
+    
+                
+        
+}
+
