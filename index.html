@@ -8,7 +8,7 @@
     <form class="form-horizontal well">
       <legend>
         <h3>
-          <div id="title">CSV Parser</div>
+          <div id="title">Genesis CSV Parser</div>
         </h3>
       </legend>
       <fieldset>
@@ -19,7 +19,8 @@
         </div>
       </fieldset>
     </form>
-    <input type="text" id="filter_input" onkeyup="filter_table()" placeholder="Filter table">
+    <input type="text" id="filter_input" onkeyup="filter_table()" placeholder="Filter by Text">
+    <input type="text" id="regex_input" onkeyup="regex_filter()" placeholder="Filter by Regex">
     <div id="output_table">
     </div>
   </div>

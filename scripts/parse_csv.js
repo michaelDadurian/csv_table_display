@@ -172,17 +172,20 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
 }
 
 function filter_table(){
+    
     var input = document.getElementById('filter_input');
     var table = document.getElementById('output_table');
     var table_rows = table.getElementsByTagName('tr');
-    var filter = input.value.toUpperCase();
-    console.log(table_rows);
+    
+    var filter = input.value;
     
     for (var i = 0; i < table_rows.length; i++){
         
-        if (table_rows[i].innerText.toUpperCase().indexOf(filter) > -1){
+        if (table_rows[i].textContent.toUpperCase().indexOf(filter) > -1){
+            /* Do nothing */
             table_rows[i].style.display = "";
         }else{
+            /* Revert to default value */
             table_rows[i].style.display = "none";
         }
             
@@ -194,4 +197,27 @@ function filter_table(){
                 
         
 }
+
+function regex_filter(){
+    var regex_input = RegExp(document.getElementById('regex_input').value, 'i');
+    console.log(regex_input);
+    var table = document.getElementById('output_table');
+    var table_rows = table.getElementsByTagName('tr');
+   
+    for (var i = 0; i < table_rows.length; i++){
+        
+        if (regex_input.test(table_rows[i].textContent.toUpperCase())){
+            /* Do nothing */
+            table_rows[i].style.display = "";
+        }else{
+            /* Revert to default value */
+            table_rows[i].style.display = "none";
+        }
+            
+    }
+}
+    
+    
+ 
+    
 
