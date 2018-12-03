@@ -86,16 +86,19 @@ var generate_table = (function(){
         table.setAttribute('id','output_table');
         
         
+        var header = table.createTHead();
         
-        var header = table.insertRow(-1);
-        
-        /* Create header row containing the column names */
+        /* Fill table header with column names */
         Object.keys(data[0]).forEach(function(key){
             var col_name = document.createElement("TH");
             col_indices[key] = index++;
+            col_name.setAttribute('id', 'col' + index);
             col_name.innerHTML = key;
+            var sort_toggle = 1;
+
             col_name.onclick = function(){
-                sort_by_col(key, col_indices[key], data);
+            	sort_toggle *= -1
+                sort_by_col(key, col_indices[key], data, sort_toggle);
             }
             
             header.appendChild(col_name);
@@ -113,65 +116,61 @@ var generate_table = (function(){
     }
 })();
 
-function sort_by_col(col_name, col_index, data){
+
+
+
+function sort_by_col(col_name, col_index, data, sort_toggle){
+
+
+
+	const compare_property_dsc = (value) => 
+		(a, b) => a[value] == b[value] ? 0 : a[value] < b[value] ? -1 : 1;
+
+	const compare_property_asc = (value) =>
+		(a, b) => a[value] == b[value] ? 0 : a[value] > b[value] ? -1 : 1;
+
     var table_div = document.getElementById('output_table');
     
     
-    var rows = 0;
-    var sorted = false;
-    var data_type;
-    var direction = 'asc';
-  
-    var col_val = data[0][col_name];
-   
-    /* Try to convert row value to a number. If Number() does not return NaN, we will sort by numerical value. */
-    var int_value = Number(col_val);
-    if (!isNaN(int_value)){
-        data_type = typeof int_value;
-    }
+    var rows = table_div.childNodes[0].rows;
+    var num_rows = rows.length;
+    var cells, cells_index, num_cells, rows_index, data_type;
+
+    /* Copy table into an array that we can call sort() on */
+    table_to_array = new Array();
+
+    /* Fill array with table values */
+ 	for (rows_index = 0; rows_index < num_rows; rows_index++){
+ 		/* Get number of cells per row */
+ 		cells = rows[rows_index].cells;
+ 		num_cells = cells.length;
+
+ 		/* Add cells per row to array */
+ 		table_to_array[rows_index] = new Array();
+ 		for (cells_index = 0; cells_index < num_cells; cells_index++){
+ 			table_to_array[rows_index][cells_index] = cells[cells_index].innerHTML;
+ 		}
+
+ 	}
+
+ 	sort_toggle == 1 ? table_to_array.sort(compare_property_asc(col_index)) : table_to_array.sort(compare_property_dsc(col_index));
+
+ 	/*
+ 	if (sort_toggle == 1){
+ 		table_to_array.sort(compare_property_asc(col_index));
+ 	} else{
+ 		table_to_array.sort(compare_property_dsc(col_index));
+ 	}
+	*/
+
+ 	for(var i = 0; i < num_rows; i++){
+ 		for (var j = 0; j < num_cells; j++){
+ 			rows[i].cells[j].innerHTML = table_to_array[i][j];
+ 		}
+ 	}
+
+
     
-    /* Check if column is a date object(Assuming the word 'Date' will be present in the column name)*/
-    else if (col_name.toUpperCase().includes('date'.toUpperCase())){
-        /* data_type = object */
-        data_type = typeof new Date();
-    }
-    /* If it's not a date or a number, sort by string value. */
-    else{
-        data_type = typeof col_val;
-    }
-    
-    while(!sorted){
-    
-        sorted = true;
-        rows = table_div.childNodes[0].rows;
-        console.log(rows);
-        var length = rows.length;
-        console.log(length);
-     
-        
-        for (var i = 1; i < rows.length - 1; i++){
-            curr_row = rows[i].getElementsByTagName('TD')[col_index];
-            next_row = rows[i+1].getElementsByTagName('TD')[col_index];
-            console.log('curr row: ' + curr_row);
-            console.log(next_row);
-            
-            if(direction == 'asc'){
-                if(data_type === 'string'){
-                    if (curr_row.innerHTML.toUpperCase() > next_row.innerHTML.toUpperCase()){
-                        rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
-                        sorted = false;
-                    }
-                }
-                else if (data_type === 'number'){
-                    if (Number(curr_row.innerHTML) > Number(next_row.innerHTML)){
-                        rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
-                        sorted = false;
-                    }
-                }
-            }
-        }
-        
-    }
     
 }
 
