@@ -90,10 +90,22 @@ var generate_table = (function(){
         
         /* Fill table header with column names */
         Object.keys(data[0]).forEach(function(key){
+            
+            
+            
+            /* Populate drop down with column names to view statistics for a specific column */
+            var select_col_stat = document.getElementById('col_statistic');
+            var option = document.createElement('option');
+            option.text = key;
+            option.value = index;
+            select_col_stat.add(option, -1);
+            
+            /* Create column and store column index */
             var col_name = document.createElement("TH");
             col_indices[key] = index++;
-            //col_name.setAttribute('id', 'col' + index);
             col_name.innerHTML = key;
+            
+            
             var sort_toggle = 1;
 
             col_name.onclick = function(){
@@ -117,7 +129,40 @@ var generate_table = (function(){
 })();
 
 
-
+function get_stats(){
+    
+    /* Get column index and name that we will generate statistics for */
+    var col = document.getElementById('col_statistic');
+    var col_index = col.value;
+    var col_text = col[col_index].textContent;
+    
+    /* Get column value in first table row to figure out data type */
+    var table_div = document.getElementById('output_table');
+    var rows = table_div.childNodes[0].rows;
+    
+    var data_type = Number(rows[0].childNodes[col_index].textContent);
+    if (typeof data_type === 'number'){
+        var sum = 0;
+        var count = rows.length;
+        
+        var average = (function(){
+            
+            for (var i = 0; i < rows.length; i++){
+                sum += Number(rows[i].childNodes[col_index].textContent);
+            }
+            
+            console.log('sum: ' + sum + ' count: ' + count);
+            return sum / count;
+                
+        });
+        
+        average();
+    }
+    
+    
+    
+    
+}
 
 function sort_by_col(col_name, col_index, data, sort_toggle){
 
@@ -177,7 +222,7 @@ function filter_table(){
     var table = document.getElementById('output_table');
     var table_rows = table.getElementsByTagName('tr');
     
-    var filter = input.value;
+    var filter = input.value.toUpperCase();
     
     for (var i = 0; i < table_rows.length; i++){
         
@@ -219,7 +264,7 @@ function regex_filter(){
 }
 
 
-function statistics
+    
     
     
  

@@ -19,9 +19,13 @@
         </div>
       </fieldset>
     </form>
+    <div id="statistics_panel">
+        View Statistics <select id="col_statistic" onchange="get_stats()"></select></br></br>
+    </div>
+    
     <input type="text" id="filter_input" onkeyup="filter_table()" placeholder="Filter by Text">
     <input type="text" id="regex_input" onkeyup="regex_filter()" placeholder="Filter by Regex">
-    <a href="statistics.html" style="float:right">Statistics</a>
+  
     <div id="output_table">
     </div>
   </div>
@@ -29,7 +33,7 @@
   <br>
   <footer>
     <center>
-      <p>&copy; Michael Dadurian</p>
+      <p>Michael Dadurian</p>
     </center>
   </footer>
 
