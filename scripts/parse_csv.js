@@ -141,22 +141,38 @@ function get_stats(){
     var rows = table_div.childNodes[0].rows;
     
     var data_type = Number(rows[0].childNodes[col_index].textContent);
+    var sum = 0; 
+    var count = rows.length;
+    
+    var value_count = {};
+    for (var i = 0; i < count; i++){
+        var col_val = rows[i].childNodes[col_index].textContent;
+        value_count[col_val] = 0;
+    }
+    
     if (typeof data_type === 'number'){
-        var sum = 0;
-        var count = rows.length;
         
         var average = (function(){
+            count_val = 1;
             
             for (var i = 0; i < rows.length; i++){
-                sum += Number(rows[i].childNodes[col_index].textContent);
+                var col_val = rows[i].childNodes[col_index].textContent;
+                value_count[col_val] = 0;
+                if (!isNaN(Number(col_val))){
+                    sum += Number(col_val);
+                    value_count[col_val] += 1;
+                    
+                }
             }
             
-            console.log('sum: ' + sum + ' count: ' + count);
+            
             return sum / count;
                 
         });
         
-        average();
+        console.log('average: ' + average());
+        console.log('sum ' + sum);
+        console.log('most common: ' + Object.keys(value_count).reduce((a,b) => value_count[a] > value_count[b] ? a : b))
     }
     
     
