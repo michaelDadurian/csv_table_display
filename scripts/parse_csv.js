@@ -131,9 +131,16 @@ var generate_table = (function(){
 
 function get_stats(){
     
-    document.getElementById('stats_table').innerHTML = "";
+    //document.getElementById('stats_table').innerHTML = "";
+    
+    
     /* Get column index and name that we will generate statistics for */
     var col = document.getElementById('col_statistic');
+    var new_stat = 1;
+    col.onclick = function(){
+        new_stat *= -1;
+    }
+    
     
     var col_index = col.value;
     var col_text = col[col_index].textContent;
@@ -143,9 +150,13 @@ function get_stats(){
     var rows = table_div.childNodes[0].rows;
     
     var data_type = Number(rows[0].childNodes[col_index].textContent);
+    
+    /* Initialize statistics variables */
     var sum = 0; 
     var count = rows.length;
     var num_values = 0;
+    var min_value, max_value, most_common, least_common;
+    var unique_vals = [];
     
     /* Initialize dictionary of counts of column values. Key:col_val Value:count */
     var value_count = {};
@@ -156,8 +167,9 @@ function get_stats(){
     }
     
     /* If column is a number, calculate the average, sum, and mode */
-    if (typeof data_type === 'number'){
+    if (!isNaN(data_type)){
         
+        /* Function to calculate sum, average, and count of each value */
         var average = (function(){
             
             for (var i = 0; i < rows.length; i++){
@@ -171,56 +183,73 @@ function get_stats(){
                 }
             }
             
-            
             return sum / count;
                 
         });
         
         
-        console.log('average: ' + average());
-        console.log('sum ' + sum);
-        console.log('most common: ' + Object.keys(value_count).reduce((a,b) => value_count[a] > value_count[b] ? a : b));
-        console.log('least common: ' + Object.keys(value_count).reduce((a,b) => value_count[a] < value_count[b] ? a : b));
-        console.log('minimum value: ' + Object.keys(value_count).reduce((a,b) => a < b ? a : b));
-        console.log('maximum value: ' + Object.keys(value_count).reduce((a,b) => a > b ? a : b));
+        average();
+      
         
+    }
+    /* Column values are Strings. Store count and number of values */
+    else{
         
-        var min_value = Object.keys(value_count).reduce((a,b) => a < b ? a : b);
-        var max_value = Object.keys(value_count).reduce((a,b) => a > b ? a : b);
-        var most_common = Object.keys(value_count).reduce((a,b) => value_count[a] > value_count[b] ? a : b);
-        var least_common = Object.keys(value_count).reduce((a,b) => value_count[a] < value_count[b] ? a : b);
-        
-        stats_data = {'Count': num_values, 'Range':[min_value, max_value].join('-'), 'Sum':sum, 'Average':average(), 'Most Common':most_common, 'Least Common':least_common};
-        
-        var stats_panel = document.getElementById('statistics_panel');
-        //document.getElementById('stats_table').innerHTML = "";
-        var stats_table = document.createElement('table');
-        stats_table.setAttribute('id', 'stats_table');
-        //stats_table.innerHTML = "";
-        
-        
-        for (var i = 0; i < 6; i++){
-
-            /* Create table row */
-            var row = stats_table.insertRow(-1);
-            
-            /* Create 2 cells for each row, stat name and stat value */
-            var stat_cell = row.insertCell(-1);
-            var stat_val_cell = row.insertCell(-1);
-
-            /* Get name of stat and its value */
-            var stat_name = Object.keys(stats_data)[i];
-            var stat_val = stats_data[Object.keys(stats_data)[i]];
-
-            stat_cell.appendChild(document.createTextNode(stat_name));
-            stat_val_cell.appendChild(document.createTextNode(stat_val));
-            
+        for (var i = 0; i < rows.length; i++){
+            var col_val = rows[i].childNodes[col_index].textContent;
+            if (col_val != 'undefined'){
+                value_count[col_val] += 1;
+                num_values += 1;
+            }
         }
         
-        document.getElementById('statistics_panel').appendChild(stats_table);
         
     }
     
+    num_unique_vals = Object.keys(value_count).length;
+    min_value = Object.keys(value_count).reduce((a,b) => a < b ? a : b);
+    max_value = Object.keys(value_count).reduce((a,b) => a > b ? a : b);
+    most_common = Object.keys(value_count).reduce((a,b) => value_count[a] > value_count[b] ? a : b);
+    least_common = Object.keys(value_count).reduce((a,b) => value_count[a] < value_count[b] ? a : b);
+    
+    if (!isNaN(data_type)){
+        stats_data = {'Count': num_values, 'Range':[min_value, max_value].join('-'), 'Number of Uniques':num_unique_vals, 'Sum':sum, 'Average':average().toFixed(2), 'Most Common':most_common, 'Least Common':least_common};
+    }else{
+        stats_data = {'Count': num_values, 'Range':[min_value, max_value].join('-'), 'Number of Uniques':num_unique_vals, 'Most Common':most_common, 'Least Common':least_common};
+    }
+        
+        
+    
+    
+    
+        
+    var stats_panel = document.getElementById('statistics_panel');
+
+    / *Reset stats table */
+    stats_panel.innerHTML = "";
+    
+    var stats_table = document.createElement('table');
+    var num_stats = Object.keys(stats_data).length;
+   
+    for (var i = 0; i < num_stats ; i++){
+
+        /* Create table row */
+        var row = stats_table.insertRow(-1);
+        
+        /* Create 2 cells for each row, stat name and stat value */
+        var stat_cell = row.insertCell(-1);
+        var stat_val_cell = row.insertCell(-1);
+
+        /* Get name of stat and its value */
+        var stat_name = Object.keys(stats_data)[i];
+        var stat_val = stats_data[Object.keys(stats_data)[i]];
+
+        stat_cell.appendChild(document.createTextNode(stat_name));
+        stat_val_cell.appendChild(document.createTextNode(stat_val));
+        
+    }
+        
+    document.getElementById('statistics_panel').appendChild(stats_table);
     
     
     
