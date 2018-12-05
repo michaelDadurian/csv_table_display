@@ -166,7 +166,7 @@ function get_stats(){
             value_count[col_val] = 0;
     }
     
-    /* If column is a number, calculate the average, sum, and mode */
+    /* If column is a number, calculate the average and sum of all values */
     if (!isNaN(data_type)){
         
         /* Function to calculate sum, average, and count of each value */
@@ -189,8 +189,6 @@ function get_stats(){
         
         
         average();
-      
-        
     }
     /* Column values are Strings. Store count and number of values */
     else{
@@ -206,31 +204,34 @@ function get_stats(){
         
     }
     
+    /* Set statistic values */
     num_unique_vals = Object.keys(value_count).length;
     min_value = Object.keys(value_count).reduce((a,b) => a < b ? a : b);
     max_value = Object.keys(value_count).reduce((a,b) => a > b ? a : b);
     most_common = Object.keys(value_count).reduce((a,b) => value_count[a] > value_count[b] ? a : b);
     least_common = Object.keys(value_count).reduce((a,b) => value_count[a] < value_count[b] ? a : b);
     
+    /* Change display based on data type */
     if (!isNaN(data_type)){
         stats_data = {'Count': num_values, 'Range':[min_value, max_value].join('-'), 'Number of Uniques':num_unique_vals, 'Sum':sum, 'Average':average().toFixed(2), 'Most Common':most_common, 'Least Common':least_common};
     }else{
         stats_data = {'Count': num_values, 'Range':[min_value, max_value].join('-'), 'Number of Uniques':num_unique_vals, 'Most Common':most_common, 'Least Common':least_common};
     }
         
+
+
         
+    /* Create statistics table */
     
-    
-    
-        
     var stats_panel = document.getElementById('statistics_panel');
 
-    / *Reset stats table */
+    /* Reset stats table */
     stats_panel.innerHTML = "";
     
     var stats_table = document.createElement('table');
     var num_stats = Object.keys(stats_data).length;
    
+    /* Fill statistics table */
     for (var i = 0; i < num_stats ; i++){
 
         /* Create table row */
@@ -249,6 +250,7 @@ function get_stats(){
         
     }
         
+    /* Add stats table to panel */
     document.getElementById('statistics_panel').appendChild(stats_table);
     
     
@@ -268,7 +270,14 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
     
     
     var rows = table_div.childNodes[0].rows;
-    var num_rows = rows.length;
+    var filtered_rows = [];
+    for(var i = 0; i < rows.length; i++){
+        if (rows[i].style.display === ""){
+            filtered_rows.push(rows[i]);
+        }
+            
+    }
+    var num_rows = filtered_rows.length;
     var cells, cells_index, num_cells, rows_index, data_type;
 
     /* Copy table into an array that we can call sort() on */
@@ -276,15 +285,17 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
 
     /* Fill array with table values */
  	for (rows_index = 0; rows_index < num_rows; rows_index++){
- 		/* Get number of cells per row */
- 		cells = rows[rows_index].cells;
- 		num_cells = cells.length;
-
- 		/* Add cells per row to array */
- 		table_to_array[rows_index] = new Array();
- 		for (cells_index = 0; cells_index < num_cells; cells_index++){
- 			table_to_array[rows_index][cells_index] = cells[cells_index].innerHTML;
- 		}
+        /* Get number of cells per row */
+        cells = filtered_rows[rows_index].cells;
+        num_cells = cells.length;
+        
+       
+        /* Add cells per row to array */
+        table_to_array[rows_index] = new Array();
+        for (cells_index = 0; cells_index < num_cells; cells_index++){
+            table_to_array[rows_index][cells_index] = cells[cells_index].innerHTML;
+        }
+        
 
  	}
 
@@ -298,7 +309,7 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
 
  	for(var i = 0; i < num_rows; i++){
  		for (var j = 0; j < num_cells; j++){
- 			rows[i].cells[j].innerHTML = table_to_array[i][j];
+ 			filtered_rows[i].cells[j].innerHTML = table_to_array[i][j];
  		}
  	}
 
@@ -307,9 +318,9 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
     
 }
 
-function filter_table(){
+function filter_table_text(){
     
-    var input = document.getElementById('filter_input');
+    var input = document.getElementById('filter_input_text');
     var table = document.getElementById('output_table');
     var table_rows = table.getElementsByTagName('tr');
     
@@ -318,10 +329,10 @@ function filter_table(){
     for (var i = 0; i < table_rows.length; i++){
         
         if (table_rows[i].textContent.toUpperCase().indexOf(filter) > -1){
-            /* Do nothing */
+            /* Keep row */
             table_rows[i].style.display = "";
         }else{
-            /* Revert to default value */
+            /* Do not display row */
             table_rows[i].style.display = "none";
         }
             

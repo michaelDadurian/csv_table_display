@@ -22,12 +22,13 @@
     View Statistics <select id="col_statistic" onchange="get_stats()"></select></br></br>
     <div id="statistics_panel">
         
-        <div id="stats_table">
-        </div>
-        
+        <div id="stats_table"></div>
+       
     </div>
     
-    <input type="text" id="filter_input" onkeyup="filter_table()" placeholder="Filter by Text">
+    </br></br>
+    
+    <input type="text" id="filter_input_text" onkeyup="filter_table_text()" placeholder="Filter by Text">
     <input type="text" id="regex_input" onkeyup="regex_filter()" placeholder="Filter by Regex">
   
     <div id="output_table">
