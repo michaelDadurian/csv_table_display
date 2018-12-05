@@ -176,14 +176,14 @@ function get_stats(){
                 
         });
         
-        /*
+        
         console.log('average: ' + average());
         console.log('sum ' + sum);
         console.log('most common: ' + Object.keys(value_count).reduce((a,b) => value_count[a] > value_count[b] ? a : b));
         console.log('least common: ' + Object.keys(value_count).reduce((a,b) => value_count[a] < value_count[b] ? a : b));
         console.log('minimum value: ' + Object.keys(value_count).reduce((a,b) => a < b ? a : b));
         console.log('maximum value: ' + Object.keys(value_count).reduce((a,b) => a > b ? a : b));
-        */
+        
         
         var min_value = Object.keys(value_count).reduce((a,b) => a < b ? a : b);
         var max_value = Object.keys(value_count).reduce((a,b) => a > b ? a : b);
@@ -200,13 +200,20 @@ function get_stats(){
         
         
         for (var i = 0; i < 6; i++){
+
+            /* Create table row */
             var row = stats_table.insertRow(-1);
             
+            /* Create 2 cells for each row, stat name and stat value */
             var stat_cell = row.insertCell(-1);
-            stat_cell.appendChild(document.createTextNode(Object.keys(stats_data)[i]));
-            
             var stat_val_cell = row.insertCell(-1);
-            stat_val_cell.appendChild(document.createTextNode(stats_data[Object.keys(stats_data)[i]]));
+
+            /* Get name of stat and its value */
+            var stat_name = Object.keys(stats_data)[i];
+            var stat_val = stats_data[Object.keys(stats_data)[i]];
+
+            stat_cell.appendChild(document.createTextNode(stat_name));
+            stat_val_cell.appendChild(document.createTextNode(stat_val));
             
         }
         
