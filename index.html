@@ -36,7 +36,14 @@
     
     
     <div id="col_val_filter">
-        Select Column <select id="col_name_dd" ></select>
+        Select Column <select id="col_name_dd" onchange="filter_col_val()"></select>
+        Operator <select id="col_filter_operator" onchange="filter_col_val()">
+            <option value="=">=</option>
+            <option value="<"><</option>
+            <option value=">">></option>
+            <option value=">=">>=</option>
+            <option value="<="><=</option>
+        </select>
         Value <input type="text" id="col_val" onkeyup="filter_col_val()" placeholder="Column Value">
         
     

@@ -383,14 +383,16 @@ function regex_filter(){
 function filter_col_val(){
     var col_index = document.getElementById('col_name_dd').value;
     var filter_val = document.getElementById('col_val').value;
-    
+    var operator = document.getElementById('col_filter_operator').value;
     
     var table = document.getElementById('output_table');
     var table_rows = table.getElementsByTagName('tr');
     
+    var data_type = Number(table_rows[1].cells[col_index].textContent);
+    
     for (var i = 0; i < table_rows.length; i++){
         if(filter_val != ""){
-            if(table_rows[i].cells[col_index].textContent === filter_val){
+            if(compare_vals(operator, table_rows[i].cells[col_index].textContent, filter_val, data_type)){
                 table_rows[i].style.display = "";
             }else{
                 table_rows[i].style.display = "none";
@@ -402,6 +404,30 @@ function filter_col_val(){
     
         
 }
+
+function compare_vals(operator, a, b, data_type){
+    if (!isNaN(data_type)){
+        a = Number(a);
+        b = Number(b);
+    }else{
+        a = a.toUpperCase();
+        b = b.toUpperCase();
+    }
+    
+    switch(operator){
+        case '=':
+            return a === b;
+        case '>':
+            return a > b;
+        case '<':
+            return a < b;
+        case '<=':
+            return a <= b;
+        case '>=':
+            return a >= b;
+    }
+}
+        
 
 
     
