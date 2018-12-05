@@ -87,14 +87,16 @@ var generate_table = (function(){
         
         
         var header = table.createTHead();
-        
+        document.getElementById('col_statistic').innerHTML = "";
+        document.getElementById('col_name_dd').innerHTML = "";
         /* Fill table header with column names */
         Object.keys(data[0]).forEach(function(key){
-            
-            
+           
             
             /* Populate statistics drop down with column names */
+            
             var select_col_stat = document.getElementById('col_statistic');
+            //select_col_stat.innerHTML = "";
             var col_option = document.createElement('option');
             
             
@@ -143,7 +145,7 @@ var generate_table = (function(){
 
 function get_stats(){
     
-    //document.getElementById('stats_table').innerHTML = "";
+    document.getElementById('stats_table').innerHTML = "";
     
     
     /* Get column index and name that we will generate statistics for */
