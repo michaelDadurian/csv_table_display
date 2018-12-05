@@ -93,12 +93,24 @@ var generate_table = (function(){
             
             
             
-            /* Populate drop down with column names to view statistics for a specific column */
+            /* Populate statistics drop down with column names */
             var select_col_stat = document.getElementById('col_statistic');
-            var option = document.createElement('option');
-            option.text = key;
-            option.value = index;
-            select_col_stat.add(option, -1);
+            var col_option = document.createElement('option');
+            
+            
+            col_option.text = key;
+            col_option.value = index;
+            select_col_stat.add(col_option, -1);
+            
+            /* Populate filter by column drop down with column names */
+            var filter_col_input = document.getElementById('col_name_dd');
+            var filter_option = document.createElement('option');
+            
+            filter_option.text = key;
+            filter_option.value = index;
+            filter_col_input.add(filter_option, -1);
+            
+            
             
             /* Create column and store column index */
             var col_name = document.createElement("TH");
@@ -270,6 +282,8 @@ function sort_by_col(col_name, col_index, data, sort_toggle){
     
     
     var rows = table_div.childNodes[0].rows;
+    
+    /* Check for filtered rows and sort them */
     var filtered_rows = [];
     for(var i = 0; i < rows.length; i++){
         if (rows[i].style.display === ""){
@@ -363,6 +377,30 @@ function regex_filter(){
         }
             
     }
+}
+
+
+function filter_col_val(){
+    var col_index = document.getElementById('col_name_dd').value;
+    var filter_val = document.getElementById('col_val').value;
+    
+    
+    var table = document.getElementById('output_table');
+    var table_rows = table.getElementsByTagName('tr');
+    
+    for (var i = 0; i < table_rows.length; i++){
+        if(filter_val != ""){
+            if(table_rows[i].cells[col_index].textContent === filter_val){
+                table_rows[i].style.display = "";
+            }else{
+                table_rows[i].style.display = "none";
+            }
+        }else{
+            table_rows[i].style.display = "";
+        }
+    }
+    
+        
 }
 
 
