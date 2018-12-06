@@ -87,8 +87,8 @@ var generate_table = (function(){
         
         
         var header = table.createTHead();
-        document.getElementById('col_statistic').innerHTML = "";
-        document.getElementById('col_name_dd').innerHTML = "";
+        //document.getElementById('col_statistic').innerHTML = "";
+        //document.getElementById('col_name_dd').innerHTML = "";
         /* Fill table header with column names */
         Object.keys(data[0]).forEach(function(key){
            
